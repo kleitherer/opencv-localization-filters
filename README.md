@@ -56,7 +56,8 @@ The key validation is that when we project the world coordinates of the checkerb
    - Augmented reality (overlaying virtual objects on real-world markers)
    - Robot navigation (knowing robot position relative to landmarks)
    - 3D reconstruction from 2D images
-   - Projecting arbitrary 3D points onto the image plane (as shown in the "Project Anything!" section)
+   - Projecting arbitrary 3D points onto the image plane
+   ![](Project_Anything.png)
 
 
 
