@@ -17,7 +17,7 @@ We're given the camera intrinsics matrix K (hardcoded to describe how 3D rays ma
 ![Coordinates of checkerboard corners extracted and plotted onto image](Problem1_1.png)
 
 **Problem 1.2: Homography and Camera Pose Estimation**
-- **Homography H**: Computes a 3×3 homography matrix H that maps world coordinates on the checkerboard plane (Z=0) to image pixel coordinates. Since the chessboard lies on a flat plane, we can represent 3D world points as 2D coordinates and use homography to map these world coordinates into 2D image coordinates.
+- **Homography H**: Computes a 3×3 homography matrix H that maps world coordinates on the checkerboard plane (Z=0) to image pixel coordinates. Since the chessboard lies on a flat plane, we can represent 3D world points as 2D coordinates and use homography to map these world coordinates into 2D image coordinates. However, we would acquire depth information from the real world using lidar or other ToF sensors or stereo sensors.
 - **Camera Pose (R, t)**: Decomposes the homography to extract the camera's rotation matrix R (3×3) and translation vector t (3×1) that describe how to transform points from the chessboard's world coordinate system into the camera's coordinate system:
 ```
 P_camera = R @ P_world + t
@@ -38,26 +38,29 @@ The decomposition process:
 - Visualizes both detected corners (red) and projected corners (blue/green) to verify calibration accuracy
 ![Validation plot overlaying detected corners (red) and projected corners (blue) to verify camera calibration accuracy](Problem1_3.png)
 
-### What It Shows/Tells Us
+### What It Shows and Why It Matters
 
-The key validation is that when we project the world coordinates of the checkerboard corners using our computed camera pose (R, t) and intrinsics (K), the projected points should align with the originally detected corners. This demonstrates:
+**Validation**: When we project the world coordinates of checkerboard corners using our computed camera pose (R, t) and intrinsics (K), the projected points should align with the originally detected corners. This confirms that:
+- The homography H was correctly computed
+- The camera pose (R, t) was correctly extracted from H  
+- The transformation pipeline works correctly
 
-1. **Calibration Accuracy**: If the projected points align with detected corners, it confirms that:
-   - The homography H was correctly computed
-   - The camera pose (R, t) was correctly extracted from H
-   - The transformation pipeline works correctly
+The computed R and t fully describe the camera's pose in 3D space: **R** tells us how the camera is oriented (rotation), and **t** tells us where it's positioned (translation) relative to the checkerboard.
 
-2. **Camera Understanding**: The computed R and t tell us:
-   - **R**: How the camera is oriented relative to the checkerboard (rotation)
-   - **t**: Where the camera is positioned relative to the checkerboard (translation)
-   - Together, they fully describe the camera's pose in 3D space
+**Why 3D↔2D Transformation is Critical**: Cameras lose depth information when capturing 3D scenes as 2D images. The calibration process uses **2D→3D correspondences** (2D image points + known 3D world points) to solve for the camera pose. Once calibrated, we can perform both directions:
 
-3. **Practical Applications**: This calibration process enables:
-   - Augmented reality (overlaying virtual objects on real-world markers)
-   - Robot navigation (knowing robot position relative to landmarks)
-   - 3D reconstruction from 2D images
-   - Projecting arbitrary 3D points onto the image plane
-   ![](Project_Anything.png)
+- **3D→2D (Projection)**: Projecting known 3D world points onto the image plane (as we do in validation)
+- **2D→3D (Back-projection)**: Converting 2D image points back to 3D world coordinates when depth information is available (from LiDAR, stereo cameras, or ToF sensors)
+
+By knowing the camera's pose (R, t) and intrinsics (K), we have a complete mathematical model that bridges the 3D world and 2D images. This enables:
+
+- **Robot Navigation & Manipulation**: Localizing robots relative to landmarks (2D→3D), enabling precise manipulation by converting 2D image coordinates to 3D world coordinates
+- **Augmented Reality**: Overlaying virtual objects on real scenes (3D→2D) with correct perspective and scale
+- **Autonomous Systems**: Self-driving cars understanding 3D road geometry and object positions from 2D images (2D→3D)
+- **3D Reconstruction**: Creating 3D models from multiple calibrated camera viewpoints using triangulation (2D→3D)
+
+This bidirectional transformation enables robots and computers to reason about the 3D world using only 2D images—algorithmically performing what human vision does naturally.
+![](Project_Anything.png)
 
 
 
