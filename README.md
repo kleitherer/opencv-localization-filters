@@ -64,10 +64,13 @@ This bidirectional transformation enables robots and computers to reason about t
 
 
 
+## Problem 2: Linear Filtering
 
+### Goal: 
+Wrote correlate image function which ran horizontal and vertical edge detection filter and generated resulting images.
 
 ## Dependencies
-Python package dependencies for this assignment are listed in the `requirements.txt` file and can be automatically installed by
+Python package dependencies for this assignment are listed in the `requirements.txt` file and can be automatically installed by...
 ```
 pip install -r requirements.txt
 ```
